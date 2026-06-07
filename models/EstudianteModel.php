@@ -102,7 +102,7 @@ class EstudianteModel {
                 peso_kg=?, talla_cm=?, imc=?, imc_clasificacion=?, nivel_riesgo=?
             WHERE id=?
         ");
-        $stmt->bind_param('ssssiiddss i',
+        $stmt->bind_param('ssssidddssi',
             $datos['nombre'], $datos['apellido'], $datos['fecha_nac'],
             $datos['genero'], $datos['id_grado'], $datos['peso_kg'],
             $datos['talla_cm'], $imc, $imc_clasificacion,
@@ -115,9 +115,14 @@ class EstudianteModel {
         return $this->conn->query("UPDATE estudiantes SET activo=0 WHERE id=".(int)$id);
     }
 
-    public function actualizarRiesgo($id, $nivel) {
+    public function actualizarRiesgo($id, $nivel, $score = null) {
+        $id = (int)$id;
         $nivel = mysqli_real_escape_string($this->conn, $nivel);
-        return $this->conn->query("UPDATE estudiantes SET nivel_riesgo='$nivel' WHERE id=".(int)$id);
+        if ($score !== null) {
+            $score = (int)$score;
+            return $this->conn->query("UPDATE estudiantes SET nivel_riesgo='$nivel', score=$score WHERE id=$id");
+        }
+        return $this->conn->query("UPDATE estudiantes SET nivel_riesgo='$nivel' WHERE id=$id");
     }
 
     public function obtenerGrados() {

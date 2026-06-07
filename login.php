@@ -27,8 +27,7 @@ if ($presenter->manejarLogin()) {
         <a href="index.php" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--gris);text-decoration:none;padding:6px 12px;border-radius:8px;border:1.5px solid #e2e8f0;transition:.18s;font-family:inherit" onmouseover="this.style.borderColor='var(--verde)';this.style.color='var(--verde-dark)'" onmouseout="this.style.borderColor='#e2e8f0';this.style.color='var(--gris)'">
             ← Volver a la página principal
         </a>
-<body class="login-page">
-<div class="login-box">
+    </div>
     <div class="login-logo">
         <div class="icon">🥗</div>
         <h1>NutriPredict Escolar</h1>

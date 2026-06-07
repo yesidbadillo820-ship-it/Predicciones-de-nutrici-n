@@ -91,28 +91,34 @@ $messages[] = [
 
 // ── Llamada a Claude API ─────────────────────────────────────────
 $api_payload = json_encode([
-    'model'      => 'claude-sonnet-4-20250514',
+    'model'      => ANTHROPIC_MODEL,
     'max_tokens' => 600,
     'system'     => $system_prompt,
     'messages'   => $messages
 ]);
 
-$ch = curl_init('https://api.anthropic.com/v1/messages');
-curl_setopt_array($ch, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_POST           => true,
-    CURLOPT_POSTFIELDS     => $api_payload,
-    CURLOPT_HTTPHEADER     => [
-        'Content-Type: application/json',
-        'anthropic-version: 2023-06-01',
-        'x-api-key: ' . ($_ENV['ANTHROPIC_API_KEY'] ?? getenv('ANTHROPIC_API_KEY') ?? '')
-    ],
-    CURLOPT_TIMEOUT        => 30
-]);
+// Si no hay API key configurada, usar directamente las respuestas de fallback
+if (ANTHROPIC_API_KEY === '') {
+    $response  = false;
+    $http_code = 0;
+} else {
+    $ch = curl_init('https://api.anthropic.com/v1/messages');
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => $api_payload,
+        CURLOPT_HTTPHEADER     => [
+            'Content-Type: application/json',
+            'anthropic-version: 2023-06-01',
+            'x-api-key: ' . ANTHROPIC_API_KEY
+        ],
+        CURLOPT_TIMEOUT        => 30
+    ]);
 
-$response = curl_exec($ch);
-$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+}
 
 if ($response === false || $http_code !== 200) {
     // Respuesta de fallback si la API no está disponible

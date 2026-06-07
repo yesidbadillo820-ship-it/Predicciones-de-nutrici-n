@@ -31,6 +31,42 @@ Sistema de gestión y predicción nutricional para instituciones educativas colo
 
 ---
 
+## 🧩 Instalación y puesta en marcha
+
+### Requisitos
+- PHP 8.1+ (probado en 8.4) con extensiones `mysqli` y `curl`
+- MySQL 8 / MariaDB 10.4+
+- Servidor web Apache (con `mod_rewrite` y `mod_headers`) o Nginx
+
+### Pasos
+```bash
+# 1. Clonar el repositorio
+git clone <repo> nutripredict && cd nutripredict
+
+# 2. Crear la base de datos y cargar el esquema
+mysql -u root -p < database/schema.sql
+
+# 3. (Opcional) Cargar datos de demostración
+mysql -u root -p nutripredict_db < database/seed.sql
+
+# 4. Configurar variables de entorno
+cp .env.example .env
+#   edita .env con las credenciales reales de tu BD y, opcionalmente, ANTHROPIC_API_KEY
+
+# 5. Apuntar el DocumentRoot del servidor a la carpeta del proyecto
+#    e iniciar (ejemplo de desarrollo local):
+php -S localhost:8000
+```
+
+Luego abre `http://localhost:8000` e inicia sesión con una credencial demo
+(ver `database/seed.sql`); todas usan la contraseña **`demo123`**.
+
+> ⚠️ **Seguridad:** el archivo `.env` nunca debe subirse al repositorio.
+> Las carpetas `includes/`, `models/`, `presenters/`, `views/`, `config/` y
+> `database/` incluyen un `.htaccess` que bloquea su acceso web directo.
+
+---
+
 ## ⚙️ Configuración de NutriBot
 
 Para activar NutriBot con respuestas de IA real, configura la variable de entorno:
@@ -50,8 +86,8 @@ Sin la API key, NutriBot responde con mensajes de fallback basados en los datos 
 ## 🏗️ Arquitectura
 
 ```
-nutripredict_final/
-├── index.php              — Redirección al dashboard
+nutripredict/
+├── index.php              — Landing pública
 ├── login.php              — Autenticación
 ├── logout.php             — Cierre de sesión
 ├── dashboard.php          — Panel principal
@@ -63,13 +99,23 @@ nutripredict_final/
 ├── predictivo.php         — Análisis predictivo
 ├── reportes.php           — Reportes estadísticos
 ├── usuarios.php           — Usuarios y roles
-├── nutribot.php           ← NUEVO: Endpoint del asistente virtual
-├── ayuda.php              ← NUEVO: Centro de ayuda
+├── nutribot.php           — Endpoint del asistente virtual
+├── ayuda.php              — Centro de ayuda
 ├── sin_acceso.php         — Página de acceso denegado
+│
+├── .htaccess              — Seguridad Apache (raíz)
+├── .env.example           — Plantilla de variables de entorno
+│
+├── config/
+│   └── config.php         — Configuración central (lee .env / entorno)
+│
+├── database/
+│   ├── schema.sql         — Estructura de la base de datos
+│   └── seed.sql           — Datos de demostración
 │
 ├── includes/
 │   ├── auth.php           — Autenticación y sesiones
-│   ├── db.php             — Conexión a la base de datos
+│   ├── db.php             — Conexión a la base de datos (por entorno)
 │   ├── header.php         — Layout: sidebar + topbar (con dark mode y ayuda)
 │   ├── footer.php         — Layout: cierre + NutriBot widget
 │   └── roles.php          — Control de permisos por rol
