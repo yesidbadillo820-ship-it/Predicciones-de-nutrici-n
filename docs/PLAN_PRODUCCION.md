@@ -140,3 +140,66 @@
 | Cobertura de pruebas (núcleo) | ≥ 60 % |
 | Tiempo de restauración de backup | < 30 min |
 | Vulnerabilidades críticas abiertas | 0 |
+
+---
+
+## 7. Evolución hacia microservicios (visión a futuro)
+
+> Esta sección relaciona los conceptos de arquitectura de microservicios con
+> NutriPredict. **Recomendación honesta:** hoy la aplicación es pequeña y un
+> **monolito modular bien organizado** (lo que acabamos de dejar) es la opción
+> correcta. Migrar a microservicios solo se justifica si aparecen necesidades
+> reales de *alta demanda*, *alta disponibilidad* o equipos independientes.
+> No conviene microservicios "porque sí": añaden complejidad operativa.
+
+### 7.1 Dónde estamos: monolito de 3 capas
+NutriPredict es un **monolito** con capa de datos (MySQL), capa de lógica
+(PHP/MVP) y capa de presentación (vistas PHP + JS). Un solo servidor, una sola
+base de datos, un solo despliegue.
+
+| Problema del monolito | ¿Aplica hoy? |
+|-----------------------|--------------|
+| Escalar es caro (se escala todo junto) | Bajo (volumen escolar pequeño) |
+| Un cambio obliga a redesplegar todo | Medio |
+| Más difícil de escalar en la nube | Bajo |
+
+### 7.2 Paso intermedio recomendado (alto valor, bajo riesgo)
+Antes de pensar en microservicios, capturar el 80 % del beneficio con prácticas
+que **no** rompen el monolito:
+- **Contenerización** (Docker): empaquetar app + dependencias → despliegues reproducibles.
+- **DevOps + CI/CD**: integración y despliegue continuos (build → test → release → deploy) para derribar el "muro de la confusión" entre desarrollo y operaciones.
+- **Mantener fronteras de dominio claras** dentro del código (ya las hay: estudiantes, menús, alimentos, asistencia, alertas, predictivo, reportes, usuarios), para que una futura separación sea natural.
+
+### 7.3 Descomposición futura por dominio (si se necesita)
+Si el sistema creciera (p. ej. una red de varias instituciones), los módulos
+actuales mapean casi 1:1 a microservicios candidatos:
+
+| Microservicio | Responsabilidad única | Notas |
+|---------------|----------------------|-------|
+| `auth` | Login, sesiones, roles | Punto de autenticación central |
+| `estudiantes` | Gestión de estudiantes e IMC | |
+| `menus` + `alimentos` | Menús y catálogo nutricional | Podrían ir juntos al inicio |
+| `asistencia` | Registro de asistencia | Alta frecuencia de escritura |
+| `alertas` | Detección y gestión de alertas | |
+| `predictivo` | Cálculo de scores de riesgo | Candidato a **serverless** (corre por lote/diario) |
+| `nutribot` | Asistente IA (Claude) | Ya es un *endpoint* aislado; candidato natural |
+| `reportes` | Estadísticas y agregados | Lecturas intensivas |
+
+Cada microservicio debería **cumplir una sola función, ser autónomo y estar
+aislado** (con su propia lógica y, idealmente, su propio almacenamiento), y
+comunicarse por mecanismos ligeros (HTTP/REST).
+
+### 7.4 Componentes de plataforma
+- **API Gateway** (AWS API Gateway, Google Cloud Endpoints o Azure API Management): expone **un único endpoint** al exterior, enruta a cada servicio y centraliza autenticación, *rate limiting* y seguridad.
+- **Serverless** (AWS Lambda / Cloud Functions) para cargas intermitentes como `predictivo` y `nutribot`: el proveedor asigna recursos solo durante la ejecución → se paga por uso.
+- **Contenedores + orquestación** (Docker + Kubernetes) cuando haya varios servicios que escalar y desplegar de forma independiente.
+- **Patrón interno por servicio** (Controller/Endpoint → Validator → Lógica de negocio → Acceso a datos), coherente con el MVP que ya usa el proyecto.
+
+### 7.5 Hoja de ruta de arquitectura
+1. **Ahora:** monolito modular + Docker + CI/CD (Fases 1–3 de este plan).
+2. **Si crece la demanda:** extraer primero `nutribot` y `predictivo` (ya casi aislados) como servicios/funciones serverless detrás de un API Gateway.
+3. **A escala (multi-institución):** descomponer por dominio según 7.3, con orquestación Kubernetes y bases de datos por servicio.
+
+> ⚖️ **Criterio de decisión:** migrar un módulo a microservicio solo cuando su
+> escalado, su ritmo de cambio o su equipo lo justifiquen. Hasta entonces, el
+> monolito modular es más barato de operar y más fácil de mantener.
