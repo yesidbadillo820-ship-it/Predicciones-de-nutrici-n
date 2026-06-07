@@ -89,11 +89,15 @@ $n = $conn->query("SELECT COUNT(*) AS t FROM alertas WHERE estado='activa'")->fe
         </div>
     </div>
 </aside>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 <div class="main">
     <header class="topbar">
-        <div>
-            <div class="topbar-title"><?=htmlspecialchars($page_title??'')?></div>
-            <div class="topbar-sub"><?=htmlspecialchars($page_sub??'')?></div>
+        <div style="display:flex;align-items:center;gap:12px">
+            <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Abrir menú">☰</button>
+            <div>
+                <div class="topbar-title"><?=htmlspecialchars($page_title??'')?></div>
+                <div class="topbar-sub"><?=htmlspecialchars($page_sub??'')?></div>
+            </div>
         </div>
         <div class="topbar-actions">
             <div class="search-wrap">

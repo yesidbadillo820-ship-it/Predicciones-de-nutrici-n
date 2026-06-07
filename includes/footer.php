@@ -136,6 +136,24 @@ function appendTyping() {
 
 function removeTyping(id) { const el = document.getElementById(id); if (el) el.remove(); }
 
+// Menú lateral en móvil (off-canvas)
+function toggleSidebar() {
+    const sb = document.querySelector('.sidebar');
+    const ov = document.getElementById('sidebarOverlay');
+    if (!sb) return;
+    const abierto = sb.classList.toggle('open');
+    if (ov) ov.classList.toggle('show', abierto);
+}
+// Cerrar el menú al tocar un enlace de navegación (en móvil)
+document.querySelectorAll('.sidebar-nav .nav-item').forEach(a => {
+    a.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+            document.querySelector('.sidebar')?.classList.remove('open');
+            document.getElementById('sidebarOverlay')?.classList.remove('show');
+        }
+    });
+});
+
 // Dark Mode
 function initDarkMode() {
     if (localStorage.getItem('nutripredict_dark') === '1') document.body.classList.add('dark-mode');
