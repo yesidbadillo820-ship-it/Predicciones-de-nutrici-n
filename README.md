@@ -33,6 +33,9 @@ Sistema de gestión y predicción nutricional para instituciones educativas colo
 
 ## 🧩 Instalación y puesta en marcha
 
+> 📘 **Guía completa paso a paso** (incluye cómo ejecutarlo en otro PC, XAMPP,
+> Docker y solución de problemas): [`docs/INSTALACION.md`](docs/INSTALACION.md)
+
 ### Requisitos
 - PHP 8.1+ (probado en 8.4) con extensiones `mysqli` y `curl`
 - MySQL 8 / MariaDB 10.4+
