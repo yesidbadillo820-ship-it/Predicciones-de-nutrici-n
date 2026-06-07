@@ -68,13 +68,13 @@
 - [x] Rate limiting en login (D6)
 - [x] Crear usuario de BD con privilegios mínimos (no `root`) — ver `docker-compose.yml`
 - [x] Consultas críticas (login/IMC/cobertura) con *prepared statements* (D2 parcial)
-- [ ] Forzar HTTPS (redirección + HSTS) — a configurar en el proxy/host de producción
+- [x] HTTPS/HSTS: cabecera HSTS (bajo HTTPS) + redirección 301 documentada en `.htaccess`
 
 ### Fase 2 — Calidad y automatización ✅
 - [x] Composer para dependencias y scripts
 - [x] PHPUnit: pruebas de `EstudianteModel` y `MenuModel` (cálculo de IMC y cobertura)
-- [x] Pipeline CI (GitHub Actions): lint + PHPUnit + integración con MySQL real en cada PR
-- [ ] PHP_CodeSniffer / PHPStan (análisis estático) — siguiente mejora
+- [x] Pipeline CI (GitHub Actions): lint + PHPStan + PHPUnit + integración con MySQL real
+- [x] PHPStan (análisis estático, nivel 5) integrado en CI
 
 ### Fase 3 — Infraestructura y despliegue ✅
 - [x] Dockerizar (PHP+Apache + MySQL) con `docker-compose` e init automático de BD
@@ -85,8 +85,10 @@
 ### Fase 4 — Operación
 - [x] Cron para `PredictivoPresenter::ejecutarPrediccion()` → `bin/run_prediction.php`
 - [x] Copias de seguridad de la BD → `scripts/backup.sh` (con retención)
-- [x] Registro de errores a log (`log_errors` en producción) — ver `config/config.php`
-- [ ] Logging estructurado (Monolog) y monitoreo (uptime/latencia/alertas) — siguiente mejora
+- [x] Logging estructurado (JSON) → `includes/logger.php` (`logs/app.log`)
+- [x] Endpoint de salud para monitoreo → `health.php` (`{status, db, env}`)
+- [x] OPcache habilitado en la imagen Docker de producción
+- [ ] Monitoreo externo (uptime/latencia/alertas) y envío de logs a colector central — siguiente mejora
 
 ---
 

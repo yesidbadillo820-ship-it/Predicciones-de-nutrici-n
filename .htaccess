@@ -24,11 +24,21 @@ DirectoryIndex index.php
     AddType application/manifest+json .webmanifest
 </IfModule>
 
+# ── Forzar HTTPS en producción (descomentar al desplegar con TLS) ──
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteCond %{HTTPS} off
+#     RewriteCond %{HTTP:X-Forwarded-Proto} !https
+#     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>
+
 # ── Cabeceras de seguridad básicas ──
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options "nosniff"
     Header always set X-Frame-Options "SAMEORIGIN"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    # HSTS: solo se envía cuando la conexión ya es HTTPS (no rompe el HTTP local)
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on'"
 </IfModule>
 
 # ── No exponer la versión de PHP ──

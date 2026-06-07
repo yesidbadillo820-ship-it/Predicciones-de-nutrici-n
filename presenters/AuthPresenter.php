@@ -22,6 +22,7 @@ class AuthPresenter {
         $ultimo   = $_SESSION['login_ultimo'] ?? 0;
         if ($intentos >= self::MAX_INTENTOS && (time() - $ultimo) < self::BLOQUEO_SEG) {
             $espera = self::BLOQUEO_SEG - (time() - $ultimo);
+            app_log('warning', 'Login bloqueado por rate limiting', ['intentos' => $intentos]);
             $this->error = "Demasiados intentos fallidos. Espera {$espera} segundos e inténtalo de nuevo.";
             return false;
         }
@@ -45,11 +46,13 @@ class AuthPresenter {
                 'email'  => $usuario['email'],
                 'rol'    => $usuario['rol'],
             ];
+            app_log('info', 'Inicio de sesión exitoso', ['id' => $usuario['id'], 'rol' => $usuario['rol']]);
             return true;
         }
 
         $_SESSION['login_intentos'] = $intentos + 1;
         $_SESSION['login_ultimo']   = time();
+        app_log('warning', 'Inicio de sesión fallido', ['email' => $email]);
         $this->error = 'Correo o contraseña incorrectos.';
         return false;
     }

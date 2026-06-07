@@ -1,0 +1,28 @@
+parameters:
+    level: 5
+    paths:
+        - models
+        - presenters
+        - bin
+        - config
+        - includes/auth.php
+        - includes/csrf.php
+        - includes/db.php
+        - includes/logger.php
+        - includes/roles.php
+        - health.php
+    excludePaths:
+        - vendor
+    bootstrapFiles:
+        - tests/phpstan-bootstrap.php
+    dynamicConstantNames:
+        - APP_ENV
+        - APP_DEBUG
+        - DB_HOST
+        - DB_USER
+        - DB_PASS
+        - DB_NAME
+        - DB_PORT
+        - ANTHROPIC_API_KEY
+        - ANTHROPIC_MODEL
+    treatPhpDocTypesAsCertain: false

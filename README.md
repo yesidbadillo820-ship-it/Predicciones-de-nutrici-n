@@ -76,12 +76,18 @@ El workflow `.github/workflows/ci.yml` se ejecuta en cada PR y:
 
 ### Comandos útiles
 ```bash
-composer install                 # dependencias (PHPUnit)
+composer install                 # dependencias (PHPUnit, PHPStan)
 composer test                    # pruebas unitarias
+composer analyse                 # análisis estático (PHPStan nivel 5)
 php bin/run_prediction.php        # recálculo de riesgo (para cron diario)
 ./scripts/backup.sh               # copia de seguridad de la BD
 ./scripts/benchmark.sh http://localhost:8080 400 15   # prueba de rendimiento
+curl http://localhost:8080/health.php                 # health-check (monitoreo)
 ```
+
+**Observabilidad:** los eventos clave (login, errores de BD, predicción) se
+registran en formato JSON en `logs/app.log`. El endpoint `health.php` devuelve
+`{status, db, env}` para monitores de *uptime*.
 
 Detalles de rendimiento y resultados de referencia en **`docs/RENDIMIENTO.md`**.
 
