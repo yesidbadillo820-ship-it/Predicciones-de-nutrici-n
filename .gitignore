@@ -1,0 +1,25 @@
+# Configuración sensible
+.env
+.env.local
+*.env
+
+# Logs
+*.log
+logs/
+
+# Dependencias
+/vendor/
+/node_modules/
+
+# Archivos de sistema / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# Subidas / temporales
+/uploads/
+/tmp/
+*.cache
