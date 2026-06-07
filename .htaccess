@@ -19,6 +19,11 @@ DirectoryIndex index.php
     </IfModule>
 </FilesMatch>
 
+# ── PWA: tipo MIME del manifest ──
+<IfModule mod_mime.c>
+    AddType application/manifest+json .webmanifest
+</IfModule>
+
 # ── Cabeceras de seguridad básicas ──
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options "nosniff"
