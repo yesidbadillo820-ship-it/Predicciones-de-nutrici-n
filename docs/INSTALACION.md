@@ -28,6 +28,23 @@ cd Predicciones-de-nutrici-n
 
 ---
 
+## ⚡ Arranque en 1 clic (lo más fácil)
+
+Con **Docker instalado**, dentro de la carpeta del proyecto:
+
+- **Windows:** doble clic en **`start.bat`** (para detener: `stop.bat`).
+- **Linux / macOS:**
+  ```bash
+  ./start.sh        # para detener: ./stop.sh
+  ```
+
+El script levanta todo y abre `http://localhost:8080` solo.
+Login: **admin@nutripredict.edu.co / demo123**.
+
+Si prefieres hacerlo a mano, sigue la Opción A o B de abajo.
+
+---
+
 ## 🐳 OPCIÓN A — Con Docker (recomendada)
 
 ### A.1 Instalar Docker
