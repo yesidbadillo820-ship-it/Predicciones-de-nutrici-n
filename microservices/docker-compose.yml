@@ -1,0 +1,97 @@
+# =============================================================
+# NutriPredict — Arquitectura de MICROSERVICIOS
+# Uso:  cd microservices && docker compose up --build
+# Punto único de entrada (API Gateway):  http://localhost:8090
+# =============================================================
+x-svc-env: &db-defaults
+  DB_HOST: mysql
+  DB_USER: nutri
+  DB_PASS: nutri
+
+services:
+  # ── Base de datos compartida físicamente, AISLADA por servicio (una BD por microservicio) ──
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ms_db:/var/lib/mysql
+      - ./services/auth/schema.sql:/docker-entrypoint-initdb.d/01-auth.sql:ro
+      - ./services/estudiantes/schema.sql:/docker-entrypoint-initdb.d/02-estudiantes.sql:ro
+      - ./services/alimentos/schema.sql:/docker-entrypoint-initdb.d/03-alimentos.sql:ro
+      - ./services/menus/schema.sql:/docker-entrypoint-initdb.d/04-menus.sql:ro
+      - ./services/asistencia/schema.sql:/docker-entrypoint-initdb.d/05-asistencia.sql:ro
+      - ./services/alertas/schema.sql:/docker-entrypoint-initdb.d/06-alertas.sql:ro
+      - ./services/predictivo/schema.sql:/docker-entrypoint-initdb.d/07-predictivo.sql:ro
+      - ./database/init/99-grants.sql:/docker-entrypoint-initdb.d/99-grants.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  auth:
+    build: ./services/auth
+    environment: { <<: *db-defaults, DB_NAME: db_auth, JWT_SECRET: nutripredict-secret }
+    depends_on: { mysql: { condition: service_healthy } }
+
+  estudiantes:
+    build: ./services/estudiantes
+    environment: { <<: *db-defaults, DB_NAME: db_estudiantes }
+    depends_on: { mysql: { condition: service_healthy } }
+
+  alimentos:
+    build: ./services/alimentos
+    environment: { <<: *db-defaults, DB_NAME: db_alimentos }
+    depends_on: { mysql: { condition: service_healthy } }
+
+  menus:
+    build: ./services/menus
+    environment: { <<: *db-defaults, DB_NAME: db_menus }
+    depends_on: { mysql: { condition: service_healthy } }
+
+  asistencia:
+    build: ./services/asistencia
+    environment: { <<: *db-defaults, DB_NAME: db_asistencia }
+    depends_on: { mysql: { condition: service_healthy } }
+
+  alertas:
+    build: ./services/alertas
+    environment: { <<: *db-defaults, DB_NAME: db_alertas }
+    depends_on: { mysql: { condition: service_healthy } }
+
+  predictivo:
+    build: ./services/predictivo
+    environment: { <<: *db-defaults, DB_NAME: db_predictivo }
+    depends_on: [estudiantes, alertas, asistencia, menus]
+
+  reportes:
+    build: ./services/reportes
+    depends_on: [predictivo, menus, alertas]
+
+  nutribot:
+    build: ./services/nutribot
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    depends_on: [predictivo, alertas]
+
+  # ── Único punto de entrada público ──
+  gateway:
+    build: ./gateway
+    environment:
+      JWT_SECRET: nutripredict-secret
+    ports:
+      - "8090:80"
+    depends_on:
+      - auth
+      - estudiantes
+      - alimentos
+      - menus
+      - asistencia
+      - alertas
+      - predictivo
+      - reportes
+      - nutribot
+
+volumes:
+  ms_db:
