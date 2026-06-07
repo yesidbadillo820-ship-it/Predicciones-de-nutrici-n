@@ -42,7 +42,8 @@ class MenuModel {
         // Calcular % de cobertura vs ICBF
         $cobertura = [];
         foreach (self::ICBF as $nut => $recomendado) {
-            $pct = $recomendado > 0 ? round(($totales[$nut] / $recomendado) * 100, 1) : 0;
+            // Los valores ICBF son siempre > 0 (constantes), así que la división es segura
+            $pct = round(($totales[$nut] / $recomendado) * 100, 1);
             $cobertura[] = [
                 'key'    => $nut,
                 'nombre' => ucfirst(str_replace(['_g','_mg','_ug','_'], ['',' mg',' μg',' '], $nut)),

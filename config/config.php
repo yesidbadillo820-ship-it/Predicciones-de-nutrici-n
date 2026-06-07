@@ -70,3 +70,6 @@ if (APP_DEBUG) {
     ini_set('display_errors', '0');
     ini_set('log_errors', '1');
 }
+
+// Logger estructurado de la aplicación
+require_once dirname(__DIR__) . '/includes/logger.php';

@@ -10,7 +10,7 @@ try {
     $conn->set_charset('utf8mb4');
 } catch (mysqli_sql_exception $e) {
     http_response_code(503);
-    error_log('[NutriPredict] DB connection error: ' . $e->getMessage());
+    app_log('error', 'Fallo de conexión a la base de datos', ['detalle' => $e->getMessage()]);
     $detalle = APP_DEBUG ? $e->getMessage() : 'Servicio no disponible temporalmente.';
     // Responder en JSON si es una petición de API, en texto si no
     if (str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json')
@@ -22,3 +22,6 @@ try {
     }
     exit;
 }
+
+// Permite también el uso `$conn = require 'includes/db.php';`
+return $conn;

@@ -29,6 +29,8 @@ jobs:
           [ "$error" -eq 0 ] && echo "Todos los archivos PHP pasan php -l"
       - name: Instalar dependencias
         run: composer install --no-interaction --no-progress
+      - name: Análisis estático (PHPStan)
+        run: php vendor/bin/phpstan analyse --no-progress
       - name: Pruebas unitarias
         run: php vendor/bin/phpunit --colors=never
 
