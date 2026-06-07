@@ -70,9 +70,20 @@ docker compose up --build
 
 ### Integración continua (CI)
 El workflow `.github/workflows/ci.yml` se ejecuta en cada PR y:
-1. Verifica la sintaxis de todos los `.php` (`php -l`).
+1. Verifica la sintaxis de todos los `.php` (`php -l`) y corre **PHPUnit**.
 2. Levanta MySQL, carga `schema.sql` + `seed.sql` y corre `tests/db_smoke.php`
    (valida conexión, login demo y consultas clave contra una BD real).
+
+### Comandos útiles
+```bash
+composer install                 # dependencias (PHPUnit)
+composer test                    # pruebas unitarias
+php bin/run_prediction.php        # recálculo de riesgo (para cron diario)
+./scripts/backup.sh               # copia de seguridad de la BD
+./scripts/benchmark.sh http://localhost:8080 400 15   # prueba de rendimiento
+```
+
+Detalles de rendimiento y resultados de referencia en **`docs/RENDIMIENTO.md`**.
 
 
 > ⚠️ **Seguridad:** el archivo `.env` nunca debe subirse al repositorio.

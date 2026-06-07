@@ -31,6 +31,7 @@ include 'includes/header.php';
 </div>
 
 <form method="POST">
+<?php csrf_field(); ?>
 <input type="hidden" name="fecha" value="<?=htmlspecialchars($fecha_sel)?>">
 <div class="card" style="margin-bottom:14px">
     <div class="table-wrap"><table>
