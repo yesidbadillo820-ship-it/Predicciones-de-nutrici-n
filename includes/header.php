@@ -13,6 +13,15 @@ $n = $conn->query("SELECT COUNT(*) AS t FROM alertas WHERE estado='activa'")->fe
     <title><?= htmlspecialchars($page_title ?? 'NutriPredict Escolar') ?></title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
+    <!-- PWA -->
+    <meta name="theme-color" content="#16a34a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="NutriPredict">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="css/icons/icon-192.png">
+    <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
 </head>
 <body>
 <aside class="sidebar">

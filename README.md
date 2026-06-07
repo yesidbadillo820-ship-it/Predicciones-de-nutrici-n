@@ -85,6 +85,16 @@ php bin/run_prediction.php        # recálculo de riesgo (para cron diario)
 
 Detalles de rendimiento y resultados de referencia en **`docs/RENDIMIENTO.md`**.
 
+### 📱 Instalar como app (PWA)
+La aplicación es una **PWA**: se puede instalar en el celular y abrir a pantalla
+completa, como una app nativa.
+- **Android (Chrome):** menú ⋮ → «Añadir a pantalla de inicio / Instalar app».
+- **iOS (Safari):** botón compartir → «Agregar a pantalla de inicio».
+
+Requiere servir el sitio por **HTTPS** (o `localhost` para pruebas). Los íconos
+se generan con `php scripts/make_icons.php` (`css/icons/`), y el comportamiento
+offline básico lo da `sw.js` + `manifest.webmanifest`.
+
 
 > ⚠️ **Seguridad:** el archivo `.env` nunca debe subirse al repositorio.
 > Las carpetas `includes/`, `models/`, `presenters/`, `views/`, `config/` y
