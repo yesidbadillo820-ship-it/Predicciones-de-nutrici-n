@@ -96,7 +96,7 @@ async function sendNutribot() {
     try {
         const res = await fetch('nutribot.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': '<?= csrf_token() ?>' },
             body: JSON.stringify({ mensaje: msg, historial: chatHistory.slice(-8) })
         });
         removeTyping(typingId);

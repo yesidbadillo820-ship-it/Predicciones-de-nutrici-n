@@ -142,6 +142,7 @@ include 'includes/header.php';
     <div class="modal-title">🍽️ Registrar Menú — RF03</div>
     <p style="font-size:12px;color:var(--gris);margin-bottom:16px">El sistema calculará automáticamente los nutrientes y los comparará con los valores recomendados por el ICBF.</p>
     <form method="POST">
+        <?php csrf_field(); ?>
         <div class="form-row">
             <div class="form-group"><label class="form-label">Fecha *</label><input type="date" name="fecha" id="m_fecha" class="form-control" value="<?=htmlspecialchars($fecha_sel)?>" required></div>
             <div class="form-group"><label class="form-label">Tiempo *</label>

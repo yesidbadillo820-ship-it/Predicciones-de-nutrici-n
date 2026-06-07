@@ -6,6 +6,10 @@ class AuthPresenter {
     private $model;
     public $error = '';
 
+    // Límite de intentos fallidos para mitigar fuerza bruta
+    private const MAX_INTENTOS = 5;
+    private const BLOQUEO_SEG  = 60;
+
     public function __construct($conn) {
         $this->model = new UsuarioModel($conn);
     }
@@ -13,12 +17,27 @@ class AuthPresenter {
     public function manejarLogin() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') return false;
 
+        // ── Rate limiting por sesión ──
+        $intentos = $_SESSION['login_intentos'] ?? 0;
+        $ultimo   = $_SESSION['login_ultimo'] ?? 0;
+        if ($intentos >= self::MAX_INTENTOS && (time() - $ultimo) < self::BLOQUEO_SEG) {
+            $espera = self::BLOQUEO_SEG - (time() - $ultimo);
+            $this->error = "Demasiados intentos fallidos. Espera {$espera} segundos e inténtalo de nuevo.";
+            return false;
+        }
+        if ((time() - $ultimo) >= self::BLOQUEO_SEG) {
+            $intentos = 0; // se reinicia la ventana de bloqueo
+        }
+
         $email    = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
 
         $usuario = $this->model->obtenerPorEmail($email);
 
         if ($usuario && password_verify($password, $usuario['password'])) {
+            // Anti-fijación de sesión: ID nuevo al autenticar
+            session_regenerate_id(true);
+            unset($_SESSION['login_intentos'], $_SESSION['login_ultimo']);
             $_SESSION['usuario_id'] = $usuario['id'];
             $_SESSION['usuario']    = [
                 'id'     => $usuario['id'],
@@ -29,6 +48,8 @@ class AuthPresenter {
             return true;
         }
 
+        $_SESSION['login_intentos'] = $intentos + 1;
+        $_SESSION['login_ultimo']   = time();
         $this->error = 'Correo o contraseña incorrectos.';
         return false;
     }

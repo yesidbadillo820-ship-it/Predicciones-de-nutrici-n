@@ -62,6 +62,7 @@ include 'includes/header.php';
     <button class="modal-close" onclick="document.getElementById('modalAlerta').classList.remove('show')">✕</button>
     <div class="modal-title">⚠️ Nueva Alerta Manual</div>
     <form method="POST">
+        <?php csrf_field(); ?>
         <input type="hidden" name="accion" value="crear">
         <div class="form-group"><label class="form-label">Estudiante *</label>
             <select name="id_estudiante" class="form-control" required>

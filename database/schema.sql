@@ -126,6 +126,7 @@ CREATE TABLE IF NOT EXISTS cobertura_nutricional (
     fecha       DATE NOT NULL,
     nutriente   VARCHAR(40) NOT NULL,
     porcentaje  DECIMAL(6,2) NOT NULL DEFAULT 0,
+    UNIQUE KEY uq_cobertura (fecha, nutriente),
     INDEX idx_cobertura_fecha (fecha),
     INDEX idx_cobertura_nutriente (nutriente)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

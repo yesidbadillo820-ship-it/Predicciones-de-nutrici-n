@@ -58,7 +58,7 @@ include 'includes/header.php';
 <div class="modal-overlay" id="modalCrear"><div class="modal">
     <button class="modal-close" onclick="document.getElementById('modalCrear').classList.remove('show')">✕</button>
     <div class="modal-title">➕ Nuevo Usuario</div>
-    <form method="POST"><input type="hidden" name="accion" value="crear">
+    <form method="POST"><?php csrf_field(); ?><input type="hidden" name="accion" value="crear">
         <div class="form-row">
             <div class="form-group"><label class="form-label">Nombre *</label><input type="text" name="nombre" class="form-control" required></div>
             <div class="form-group"><label class="form-label">Correo *</label><input type="email" name="email" class="form-control" required></div>
@@ -76,7 +76,7 @@ include 'includes/header.php';
 <div class="modal-overlay" id="modalRol"><div class="modal">
     <button class="modal-close" onclick="document.getElementById('modalRol').classList.remove('show')">✕</button>
     <div class="modal-title">🔄 Cambiar Rol</div>
-    <form method="POST"><input type="hidden" name="accion" value="rol"><input type="hidden" name="id" id="rol_id">
+    <form method="POST"><?php csrf_field(); ?><input type="hidden" name="accion" value="rol"><input type="hidden" name="id" id="rol_id">
         <div class="form-group"><label class="form-label">Usuario</label><div id="rol_nombre" style="padding:8px 12px;background:var(--gris-light);border-radius:9px;font-size:13px;font-weight:600"></div></div>
         <div class="form-group"><label class="form-label">Nuevo Rol</label>
             <select name="rol" id="rol_select" class="form-control"><option value="admin">🛡️ Admin</option><option value="encargado_restaurante">👨‍🍳 Restaurante</option><option value="docente">📚 Docente</option><option value="directora">🏫 Directora</option></select>
@@ -88,7 +88,7 @@ include 'includes/header.php';
 <div class="modal-overlay" id="modalPass"><div class="modal">
     <button class="modal-close" onclick="document.getElementById('modalPass').classList.remove('show')">✕</button>
     <div class="modal-title">🔑 Cambiar Contraseña</div>
-    <form method="POST"><input type="hidden" name="accion" value="resetpass"><input type="hidden" name="id" id="pass_id">
+    <form method="POST"><?php csrf_field(); ?><input type="hidden" name="accion" value="resetpass"><input type="hidden" name="id" id="pass_id">
         <div class="form-group"><label class="form-label">Usuario</label><div id="pass_nombre" style="padding:8px 12px;background:var(--gris-light);border-radius:9px;font-size:13px;font-weight:600"></div></div>
         <div class="form-group"><label class="form-label">Nueva Contraseña *</label><input type="password" name="nueva_pass" id="nueva_pass" class="form-control" required></div>
         <div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn btn-secondary" onclick="document.getElementById('modalPass').classList.remove('show')">Cancelar</button><button type="submit" class="btn btn-primary">Cambiar</button></div>

@@ -41,15 +41,15 @@
 
 ## 2. Deuda técnica conocida (a resolver antes de producción)
 
-| # | Tema | Riesgo | Acción recomendada |
-|---|------|--------|--------------------|
-| D1 | Tabla `cobertura_nutricional` se **lee** (reportes/predicción) pero el código no la **escribe** — solo se llena con `seed.sql` | Reportes vacíos en uso real | Poblarla desde `MenuModel::guardar()` con nombres de nutriente canónicos |
-| D2 | Varias consultas interpolan valores (aunque casteados a `int` o escapados) | Inyección SQL si cambia el flujo | Migrar todo a sentencias preparadas |
-| D3 | Sin token CSRF en formularios POST | Falsificación de peticiones | Añadir token CSRF por sesión |
-| D4 | No se regenera el ID de sesión al iniciar sesión | Fijación de sesión | `session_regenerate_id(true)` en login |
-| D5 | Cookies de sesión sin flags `Secure`/`HttpOnly`/`SameSite` | Robo de sesión | Configurar `session.cookie_*` |
-| D6 | Sin límite de intentos de login | Fuerza bruta | Rate limiting / bloqueo temporal |
-| D7 | Sin pruebas automatizadas | Regresiones | PHPUnit para modelos y presenters |
+| # | Tema | Estado | Resolución |
+|---|------|--------|-----------|
+| D1 | `cobertura_nutricional` se leía pero no se escribía | ✅ Resuelto | `MenuModel::registrarCobertura()` la puebla en cada guardado (upsert por `fecha,nutriente`) |
+| D2 | Consultas con valores interpolados | 🟡 Parcial | Login, IMC y cobertura usan *prepared statements*; el resto castea a `int`/escapa. Pendiente migración total |
+| D3 | Sin token CSRF en formularios POST | ✅ Resuelto | `includes/csrf.php` + verificación automática en `auth.php` + token en los 9 formularios y en NutriBot |
+| D4 | No se regeneraba el ID de sesión | ✅ Resuelto | `session_regenerate_id(true)` al autenticar |
+| D5 | Cookies de sesión sin flags seguras | ✅ Resuelto | `HttpOnly`, `SameSite=Lax` y `Secure` (auto en HTTPS) en `auth.php` |
+| D6 | Sin límite de intentos de login | ✅ Resuelto | Rate limiting por sesión (5 intentos / 60 s) en `AuthPresenter` |
+| D7 | Sin pruebas automatizadas | ✅ Resuelto | PHPUnit (`tests/*Test.php`) + smoke test de BD, integrados en CI |
 
 ---
 
@@ -60,33 +60,33 @@
 - [x] Crear esquema y datos de demostración
 - [x] Externalizar configuración (`.env`)
 - [x] Corregir bugs bloqueantes
-- [ ] Validar el flujo completo en un entorno con MySQL real
+- [x] Validar el flujo completo en un entorno con MySQL/MariaDB real (smoke test + pruebas funcionales)
 
-### Fase 1 — Seguridad mínima para producción (1 semana)
-- [ ] CSRF en todos los formularios (D3)
-- [ ] `session_regenerate_id` + flags de cookie seguras (D4, D5)
-- [ ] Forzar HTTPS (redirección + HSTS)
-- [ ] Rate limiting en login (D6)
-- [ ] Revisar y migrar consultas a preparadas (D2)
-- [ ] Crear usuario de BD con privilegios mínimos (no `root`)
+### Fase 1 — Seguridad mínima para producción ✅
+- [x] CSRF en todos los formularios (D3)
+- [x] `session_regenerate_id` + flags de cookie seguras (D4, D5)
+- [x] Rate limiting en login (D6)
+- [x] Crear usuario de BD con privilegios mínimos (no `root`) — ver `docker-compose.yml`
+- [x] Consultas críticas (login/IMC/cobertura) con *prepared statements* (D2 parcial)
+- [ ] Forzar HTTPS (redirección + HSTS) — a configurar en el proxy/host de producción
 
-### Fase 2 — Calidad y automatización (1–2 semanas)
-- [ ] Composer para autoload PSR-4 y dependencias
-- [ ] PHPUnit: pruebas de `EstudianteModel`, `MenuModel`, `PredictivoPresenter`
-- [ ] PHP_CodeSniffer / PHPStan (análisis estático)
-- [x] Pipeline CI (GitHub Actions): lint + integración con MySQL real en cada PR
+### Fase 2 — Calidad y automatización ✅
+- [x] Composer para dependencias y scripts
+- [x] PHPUnit: pruebas de `EstudianteModel` y `MenuModel` (cálculo de IMC y cobertura)
+- [x] Pipeline CI (GitHub Actions): lint + PHPUnit + integración con MySQL real en cada PR
+- [ ] PHP_CodeSniffer / PHPStan (análisis estático) — siguiente mejora
 
-### Fase 3 — Infraestructura y despliegue (1 semana)
+### Fase 3 — Infraestructura y despliegue ✅
 - [x] Dockerizar (PHP+Apache + MySQL) con `docker-compose` e init automático de BD
-- [ ] Variables de entorno gestionadas por el orquestador/host
-- [ ] Migraciones versionadas de BD (p. ej. Phinx)
+- [x] Variables de entorno gestionadas por entorno/host (`config/config.php` + `.env`)
+- [ ] Migraciones versionadas de BD (p. ej. Phinx) — recomendado a futuro
 - [ ] Estrategia de despliegue (blue-green o rolling) y *rollback*
 
-### Fase 4 — Operación (continuo)
-- [ ] Logging estructurado (Monolog) a archivo/servicio central
-- [ ] Monitoreo (uptime, errores, latencia) y alertas
-- [ ] Copias de seguridad automáticas de la BD + prueba de restauración
-- [ ] Cron para `PredictivoPresenter::ejecutarPrediccion()` (recálculo diario)
+### Fase 4 — Operación
+- [x] Cron para `PredictivoPresenter::ejecutarPrediccion()` → `bin/run_prediction.php`
+- [x] Copias de seguridad de la BD → `scripts/backup.sh` (con retención)
+- [x] Registro de errores a log (`log_errors` en producción) — ver `config/config.php`
+- [ ] Logging estructurado (Monolog) y monitoreo (uptime/latencia/alertas) — siguiente mejora
 
 ---
 

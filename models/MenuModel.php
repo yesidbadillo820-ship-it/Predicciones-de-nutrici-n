@@ -44,6 +44,7 @@ class MenuModel {
         foreach (self::ICBF as $nut => $recomendado) {
             $pct = $recomendado > 0 ? round(($totales[$nut] / $recomendado) * 100, 1) : 0;
             $cobertura[] = [
+                'key'    => $nut,
                 'nombre' => ucfirst(str_replace(['_g','_mg','_ug','_'], ['',' mg',' μg',' '], $nut)),
                 'valor'  => round($totales[$nut], 2),
                 'pct'    => $pct,
@@ -117,12 +118,40 @@ class MenuModel {
             $this->conn->query("INSERT INTO menu_alimentos(id_menu,id_alimento,porcion_g) VALUES($id_menu,$id_alimento,$porcion)");
         }
 
+        // D1: registrar la cobertura del día para reportes y predicción
+        $this->registrarCobertura($fecha, $calculo['cobertura']);
+
         return ['id_menu' => $id_menu, 'calculo' => $calculo];
     }
 
     private function obtenerIdMenu($fecha, $tipo) {
         $r = $this->conn->query("SELECT id FROM menus WHERE fecha='$fecha' AND tipo_tiempo='$tipo'")->fetch_assoc();
         return $r['id'] ?? null;
+    }
+
+    // D1: persistir el % de cobertura por nutriente clave (para reportes/predicción).
+    // Usa nombres canónicos que coinciden con ReporteModel y upsert por (fecha, nutriente).
+    private function registrarCobertura($fecha, array $cobertura) {
+        static $nombres = [
+            'hierro_mg'     => 'Hierro',
+            'calcio_mg'     => 'Calcio',
+            'proteinas_g'   => 'Proteinas',
+            'vitamina_d_ug' => 'Vitamina D',
+            'zinc_mg'       => 'Zinc',
+        ];
+        $stmt = $this->conn->prepare("
+            INSERT INTO cobertura_nutricional(fecha, nutriente, porcentaje)
+            VALUES(?, ?, ?)
+            ON DUPLICATE KEY UPDATE porcentaje = VALUES(porcentaje)
+        ");
+        foreach ($cobertura as $item) {
+            $key = $item['key'] ?? '';
+            if (!isset($nombres[$key])) continue;
+            $nombre = $nombres[$key];
+            $pct    = (float) $item['pct'];
+            $stmt->bind_param('ssd', $fecha, $nombre, $pct);
+            $stmt->execute();
+        }
     }
 
     public function eliminar($id) {

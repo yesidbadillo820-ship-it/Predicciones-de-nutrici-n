@@ -61,6 +61,7 @@ include 'includes/header.php';
     <button class="modal-close" onclick="document.getElementById('modalAlimento').classList.remove('show')">✕</button>
     <div class="modal-title">➕ Nuevo Alimento</div>
     <form method="POST">
+        <?php csrf_field(); ?>
         <div class="form-row">
             <div class="form-group"><label class="form-label">Nombre *</label><input type="text" name="nombre" class="form-control" required></div>
             <div class="form-group"><label class="form-label">Categoría</label>

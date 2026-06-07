@@ -37,6 +37,7 @@ if ($presenter->manejarLogin()) {
     <div class="alert-box error">❌ <?=htmlspecialchars($presenter->error)?></div>
     <?php endif; ?>
     <form method="POST">
+        <?php csrf_field(); ?>
         <div class="form-group"><label class="form-label">Correo Electrónico</label><input type="email" name="email" class="form-control" placeholder="correo@ejemplo.com" required value="<?=htmlspecialchars($_POST['email']??'')?>"></div>
         <div class="form-group"><label class="form-label">Contraseña</label><input type="password" name="password" class="form-control" placeholder="••••••••" required></div>
         <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px">→ Iniciar Sesión</button>

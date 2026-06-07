@@ -48,6 +48,7 @@
     <button class="modal-close" onclick="document.getElementById('modalCrear').classList.remove('show')">✕</button>
     <div class="modal-title">➕ Nuevo Estudiante</div>
     <form method="POST">
+        <?php csrf_field(); ?>
         <input type="hidden" name="accion" value="crear">
         <div class="form-row">
             <div class="form-group"><label class="form-label">Nombre *</label><input type="text" name="nombre" class="form-control" required></div>
@@ -84,6 +85,7 @@
     <button class="modal-close" onclick="document.getElementById('modalEditar').classList.remove('show')">✕</button>
     <div class="modal-title">✏️ Editar Estudiante</div>
     <form method="POST">
+        <?php csrf_field(); ?>
         <input type="hidden" name="accion" value="editar">
         <input type="hidden" name="id" id="edit_id">
         <div class="form-row">
