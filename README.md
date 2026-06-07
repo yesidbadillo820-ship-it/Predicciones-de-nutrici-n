@@ -31,6 +31,14 @@ Sistema de gestión y predicción nutricional para instituciones educativas colo
 
 ---
 
+## 🧩 Versiones de arquitectura
+
+Este repositorio incluye **dos arquitecturas** del mismo sistema:
+- **Monolito (MVP)** — raíz del proyecto. Simple de desplegar; ideal para una institución.
+- **Microservicios** — carpeta [`microservices/`](microservices/README.md). API Gateway + 9 servicios independientes con base de datos por servicio (según el material de microservicios). Se ejecuta con `cd microservices && docker compose up --build` (gateway en `:8090`).
+
+---
+
 ## 🧩 Instalación y puesta en marcha
 
 > 📘 **Guía completa paso a paso** (incluye cómo ejecutarlo en otro PC, XAMPP,
