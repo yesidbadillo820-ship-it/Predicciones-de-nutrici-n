@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  # ── 1. Sintaxis de todos los archivos PHP ──────────────────────────
+  lint:
+    name: Lint PHP (php -l)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configurar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mysqli, curl
+          coverage: none
+      - name: Verificar sintaxis
+        run: |
+          set -e
+          error=0
+          while IFS= read -r f; do
+            php -l "$f" > /dev/null || { echo "::error file=$f::Error de sintaxis"; error=1; }
+          done < <(find . -path ./vendor -prune -o -name '*.php' -print)
+          [ "$error" -eq 0 ] && echo "Todos los archivos PHP pasan php -l"
+
+  # ── 2. Integración con MySQL real (schema + seed + smoke test) ──────
+  database:
+    name: Integración BD (schema + seed)
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASS: root
+      DB_NAME: nutripredict_db
+      APP_ENV: development
+      APP_DEBUG: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configurar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mysqli, curl
+          coverage: none
+      - name: Esperar a MySQL
+        run: |
+          for i in $(seq 1 30); do
+            if mysqladmin ping -h 127.0.0.1 -proot --silent; then echo "MySQL listo"; break; fi
+            echo "Esperando MySQL ($i)…"; sleep 2
+          done
+      - name: Cargar esquema y datos demo
+        run: |
+          mysql -h 127.0.0.1 -uroot -proot < database/schema.sql
+          mysql -h 127.0.0.1 -uroot -proot nutripredict_db < database/seed.sql
+      - name: Prueba de humo de la capa de datos
+        run: php tests/db_smoke.php

@@ -1,0 +1,9 @@
+.git
+.github
+.env
+.env.local
+*.log
+docs
+tests
+node_modules
+vendor

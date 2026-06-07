@@ -61,6 +61,20 @@ php -S localhost:8000
 Luego abre `http://localhost:8000` e inicia sesión con una credencial demo
 (ver `database/seed.sql`); todas usan la contraseña **`demo123`**.
 
+### Opción rápida con Docker
+Levanta la app + MySQL (con esquema y datos demo cargados automáticamente):
+```bash
+docker compose up --build
+# App en http://localhost:8080  ·  login: admin@nutripredict.edu.co / demo123
+```
+
+### Integración continua (CI)
+El workflow `.github/workflows/ci.yml` se ejecuta en cada PR y:
+1. Verifica la sintaxis de todos los `.php` (`php -l`).
+2. Levanta MySQL, carga `schema.sql` + `seed.sql` y corre `tests/db_smoke.php`
+   (valida conexión, login demo y consultas clave contra una BD real).
+
+
 > ⚠️ **Seguridad:** el archivo `.env` nunca debe subirse al repositorio.
 > Las carpetas `includes/`, `models/`, `presenters/`, `views/`, `config/` y
 > `database/` incluyen un `.htaccess` que bloquea su acceso web directo.

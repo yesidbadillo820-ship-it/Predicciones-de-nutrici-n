@@ -74,10 +74,10 @@
 - [ ] Composer para autoload PSR-4 y dependencias
 - [ ] PHPUnit: pruebas de `EstudianteModel`, `MenuModel`, `PredictivoPresenter`
 - [ ] PHP_CodeSniffer / PHPStan (análisis estático)
-- [ ] Pipeline CI (GitHub Actions): lint + análisis + pruebas en cada PR
+- [x] Pipeline CI (GitHub Actions): lint + integración con MySQL real en cada PR
 
 ### Fase 3 — Infraestructura y despliegue (1 semana)
-- [ ] Dockerizar (PHP-FPM + Nginx + MySQL) con `docker-compose`
+- [x] Dockerizar (PHP+Apache + MySQL) con `docker-compose` e init automático de BD
 - [ ] Variables de entorno gestionadas por el orquestador/host
 - [ ] Migraciones versionadas de BD (p. ej. Phinx)
 - [ ] Estrategia de despliegue (blue-green o rolling) y *rollback*
