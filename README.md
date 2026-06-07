@@ -2,6 +2,18 @@
 
 Sistema de gestión y predicción nutricional para instituciones educativas colombianas.
 
+## ▶️ Verlo funcionando sin instalar nada (GitHub Codespaces)
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/yesidbadillo820-ship-it/Predicciones-de-nutrici-n)
+
+1. Haz clic en el botón de arriba (o en GitHub: **Code → Codespaces → Create codespace on main**).
+2. Espera 1–2 minutos: el entorno se prepara y **levanta la app automáticamente**.
+3. En la pestaña **PORTS / PUERTOS**, abre el puerto **8080** 🌐 → se abre la interfaz.
+4. Inicia sesión: **admin@nutripredict.edu.co** / **demo123**.
+
+> Todo corre en la nube, en el navegador. El evaluador solo necesita una cuenta de GitHub; no instala Docker, PHP ni MySQL.
+> Para ver la versión de **microservicios**: en la terminal del Codespace ejecuta `cd microservices && docker compose up -d --build` y abre el puerto **8090**.
+
 ---
 
 ## 🚀 Mejoras implementadas (v2)
