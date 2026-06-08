@@ -13,6 +13,7 @@
 
 USE nutripredict_db;
 
+SET NAMES utf8mb4;
 -- ── Usuarios (password = demo123) ────────────────────────────
 INSERT INTO usuarios (nombre, email, password, rol) VALUES
 ('Administrador General', 'admin@nutripredict.edu.co',       '$2y$12$HCdAlu0EV70D9OLLiixu8e.NEu040eXBeI5k0o.Kv85sv0.gu5cQ.', 'admin'),

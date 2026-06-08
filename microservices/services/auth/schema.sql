@@ -2,6 +2,7 @@
 CREATE DATABASE IF NOT EXISTS db_auth CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE db_auth;
 
+SET NAMES utf8mb4;
 CREATE TABLE IF NOT EXISTS usuarios (
     id       INT AUTO_INCREMENT PRIMARY KEY,
     nombre   VARCHAR(120) NOT NULL,
