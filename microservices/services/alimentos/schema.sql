@@ -2,6 +2,7 @@
 CREATE DATABASE IF NOT EXISTS db_alimentos CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE db_alimentos;
 
+SET NAMES utf8mb4;
 CREATE TABLE IF NOT EXISTS alimentos (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     nombre          VARCHAR(120) NOT NULL,

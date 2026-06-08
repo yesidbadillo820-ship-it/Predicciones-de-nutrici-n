@@ -2,6 +2,7 @@
 CREATE DATABASE IF NOT EXISTS db_estudiantes CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE db_estudiantes;
 
+SET NAMES utf8mb4;
 CREATE TABLE IF NOT EXISTS grados (
     id     INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(60) NOT NULL,

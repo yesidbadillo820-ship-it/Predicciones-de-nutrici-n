@@ -2,6 +2,7 @@
 CREATE DATABASE IF NOT EXISTS db_asistencia CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE db_asistencia;
 
+SET NAMES utf8mb4;
 CREATE TABLE IF NOT EXISTS asistencia (
     id            INT AUTO_INCREMENT PRIMARY KEY,
     id_estudiante INT NOT NULL,
