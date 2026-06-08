@@ -29,8 +29,6 @@ services:
       MYSQL_DATABASE: nutripredict_db
       MYSQL_USER: nutripredict
       MYSQL_PASSWORD: nutripredict
-    ports:
-      - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
       # Inicialización automática (orden alfabético): esquema y luego datos demo
