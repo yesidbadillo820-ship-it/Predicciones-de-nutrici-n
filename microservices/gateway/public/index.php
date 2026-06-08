@@ -15,8 +15,15 @@ header('Access-Control-Allow-Headers: Authorization, Content-Type');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 if ($method === 'OPTIONS') { http_response_code(204); exit; }
 
-if ($path === '/health' || $path === '/') {
+if ($path === '/health') {
     json_out(['status' => 'ok', 'service' => 'gateway', 'servicios' => SERVICIOS]);
+}
+
+// Rutas que no son de la API → servir la interfaz web (SPA) en el mismo origen
+if (!str_starts_with($path, '/api/')) {
+    header('Content-Type: text/html; charset=utf-8');
+    readfile(__DIR__ . '/app.html');
+    exit;
 }
 
 if (!preg_match('#^/api/([a-z]+)(/.*)?$#', $path, $m)) {
