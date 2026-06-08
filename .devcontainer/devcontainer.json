@@ -1,27 +1,16 @@
 {
-  // Configuración de GitHub Codespaces / Dev Containers.
-  // Permite abrir y EJECUTAR el proyecto en el navegador, sin instalar nada local.
   "name": "NutriPredict Escolar",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-
-  // Docker dentro del Codespace (para levantar la app con docker compose)
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
-
-  // Puertos que se exponen en el navegador
-  "forwardPorts": [8080, 8090],
+  "forwardPorts": [8090, 8080],
   "portsAttributes": {
-    "8080": { "label": "NutriPredict (interfaz visual)", "onAutoForward": "openBrowser" },
-    "8090": { "label": "API Gateway (microservicios)", "onAutoForward": "notify" }
+    "8090": { "label": "NutriPredict (microservicios)", "onAutoForward": "openBrowser" },
+    "8080": { "label": "NutriPredict (monolito)", "onAutoForward": "silent" }
   },
-
-  // Al crear el Codespace: levantar automáticamente la app monolito (interfaz visual)
-  "postCreateCommand": "docker compose up -d --build",
-
-  // Mensaje de bienvenida con las instrucciones
+  "postCreateCommand": "cd microservices && docker compose up -d --build",
   "postAttachCommand": "bash .devcontainer/welcome.sh",
-
   "customizations": {
     "vscode": {
       "extensions": ["bmewburn.vscode-intelephense-client"]

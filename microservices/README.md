@@ -60,7 +60,7 @@ flowchart TB
 | **Autenticación en la capa externa** | `auth` emite JWT en `/login`; el gateway lo verifica en cada ruta protegida |
 | **Contenedores (Docker)** | Un `Dockerfile` por servicio + `docker-compose.yml` que orquesta todo |
 | **DevOps / CI/CD** | Pipeline en `.github/workflows/` (lint + análisis + pruebas) |
-| **Serverless / Kubernetes** | `predictivo` y `nutribot` son candidatos serverless; el compose es trasladable a K8s (documentado en `docs/PLAN_PRODUCCION.md`) |
+| **Serverless / Kubernetes** | `predictivo` y `nutribot` son candidatos serverless; el `docker-compose` es trasladable a Kubernetes |
 
 ---
 
@@ -70,7 +70,10 @@ flowchart TB
 cd microservices
 docker compose up --build
 ```
-- **API Gateway:** http://localhost:8090
+- **Interfaz web:** http://localhost:8090 — panel visual (login, indicadores,
+  estudiantes, alertas, estado de los servicios y el asistente NutriBot),
+  servido por el propio gateway y consumiendo la API.
+- **API Gateway:** las rutas `/api/...` exponen los microservicios.
 - Las bases de datos por servicio se crean y siembran solas (datos demo).
 
 ### Probarlo (con `curl`)

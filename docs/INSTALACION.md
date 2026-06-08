@@ -169,4 +169,3 @@ php bin/run_prediction.php   # recalcular riesgo (cron diario)
 - Sirve por **HTTPS** (descomenta el bloque de redirección en `.htaccess`).
 - Usa contraseñas reales y **borra las cuentas demo**.
 - Define las variables de entorno en el host (no subas `.env` al repositorio).
-- Detalles y fases completas en [`PLAN_PRODUCCION.md`](PLAN_PRODUCCION.md).
