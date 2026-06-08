@@ -172,7 +172,7 @@ td{padding:12px 18px;border-bottom:1px solid #f1f5f9}tr:last-child td{border-bot
 <div class="chat hidden" id="chat">
   <div class="chat-h"><div class="ic">🥗</div><div><b>NutriBot</b><span><span class="dot" style="background:#86efac"></span> Asistente virtual</span></div><button class="close" onclick="toggleChat()">✕</button></div>
   <div class="msgs" id="msgs"><div class="msg bot">Hola 👋, soy <b>NutriBot</b>. Te ayudo con el estado nutricional, alertas y recomendaciones. ¿Qué necesitas?</div></div>
-  <div class="chips" id="chips"><button class="chip" onclick="quick('¿Cuántos estudiantes están en riesgo alto?')">Riesgo alto</button><button class="chip" onclick="quick('¿Cuántas alertas activas hay?')">Alertas</button><button class="chip" onclick="quick('Dame recomendaciones nutricionales')">Recomendaciones</button></div>
+  <div class="chips" id="chips"><button class="chip" onclick="quick('¿Cuántos estudiantes están en riesgo alto?')">Riesgo alto</button><button class="chip" onclick="quick('¿Cuántas alertas activas hay?')">Alertas</button><button class="chip" onclick="quick('¿Cómo está la cobertura nutricional?')">Cobertura</button><button class="chip" onclick="quick('¿Cómo va la asistencia de hoy?')">Asistencia</button><button class="chip" onclick="quick('Dame recomendaciones nutricionales')">Recomendaciones</button><button class="chip" onclick="quick('¿Qué puedes hacer?')">¿Qué puedes hacer?</button></div>
   <div class="chat-in"><input id="chatInput" placeholder="Escribe tu consulta…" onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">➤</button></div>
 </div>
 
@@ -315,7 +315,7 @@ async function vMicro(){const svcs=['auth','estudiantes','alimentos','menus','as
 let hist=[];
 function toggleChat(){document.getElementById('chat').classList.toggle('hidden');}
 function quick(t){document.getElementById('chatInput').value=t;sendChat();}
-function addMsg(role,text){const d=document.createElement('div');d.className='msg '+role;d.innerHTML=esc(text).replace(/\*\*(.*?)\*\*/g,'<b>$1</b>');const m=document.getElementById('msgs');m.appendChild(d);m.scrollTop=m.scrollHeight;}
+function addMsg(role,text){const d=document.createElement('div');d.className='msg '+role;d.innerHTML=esc(text).replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');const m=document.getElementById('msgs');m.appendChild(d);m.scrollTop=m.scrollHeight;}
 async function sendChat(){const inp=document.getElementById('chatInput');const msg=inp.value.trim();if(!msg)return;document.getElementById('chips').style.display='none';addMsg('user',msg);inp.value='';hist.push({role:'user',content:msg});const t=document.createElement('div');t.className='msg bot';t.textContent='…';document.getElementById('msgs').appendChild(t);try{const r=await api('/api/nutribot/nutribot',{method:'POST',body:JSON.stringify({mensaje:msg,historial:hist.slice(-8)})});t.remove();const resp=r.respuesta||'Lo siento, ocurrió un error.';addMsg('bot',resp);hist.push({role:'assistant',content:resp});}catch(_){t.remove();addMsg('bot','⚠️ No pude conectar con el asistente.');}}
 
 if(TOKEN&&USER)showApp();

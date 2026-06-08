@@ -5,11 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NutriPredict Escolar — Nutrición Inteligente</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<meta name="theme-color" content="#16a34a">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="css/icons/icon-192.png">
-<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
 <style>
 :root { --verde:#22c55e; --verde-dark:#16a34a; --verde-light:#dcfce7; --azul-dark:#0f172a; --gris:#64748b; }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
