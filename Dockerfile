@@ -28,7 +28,9 @@ WORKDIR /var/www/html
 # Copiar la aplicación
 COPY . /var/www/html/
 
-# Permisos para el usuario de Apache
-RUN chown -R www-data:www-data /var/www/html
+# Permisos y entrypoint (auto-inicializa la BD y arranca Apache)
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod +x /var/www/html/docker/entrypoint.sh
 
 EXPOSE 80
+ENTRYPOINT ["/var/www/html/docker/entrypoint.sh"]
